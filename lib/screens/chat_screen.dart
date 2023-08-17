@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:zeggy_chat/constants.dart';
 
 class ChatScreen extends StatefulWidget {
+
+  //The static keyword helps to create a class wise variable
   static String id = 'chat_screen';
+
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }

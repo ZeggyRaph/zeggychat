@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class RegistrationScreen extends StatefulWidget {
+
+  //The static keyword helps to create a class wise variable
   static String id = 'registration_screen';
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
