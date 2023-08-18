@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:zeggy_chat/screens/login_screen.dart';
 import 'package:zeggy_chat/screens/registration_screen.dart';
 import 'package:zeggy_chat/components/rounded_button.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+
+
 class WelcomeScreen extends StatefulWidget {
 
   //The static keyword helps to create a class wise variable
@@ -48,9 +51,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                     height: 60.0,
                   ),
                 ),
-                Text(
-                  'Zeggy Chat',
-                  style: TextStyle(
+                //Implements animation of text using Animation package
+                TyperAnimatedTextKit(text:[
+                  'Zeggy Chat'],
+                  textStyle: TextStyle(
                     fontSize: 45.0,
                     fontWeight: FontWeight.w900,
                   ),
