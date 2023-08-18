@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zeggy_chat/screens/login_screen.dart';
 import 'package:zeggy_chat/screens/registration_screen.dart';
-
+import 'package:zeggy_chat/components/rounded_button.dart';
 class WelcomeScreen extends StatefulWidget {
 
   //The static keyword helps to create a class wise variable
@@ -9,8 +9,26 @@ class WelcomeScreen extends StatefulWidget {
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
+// we extend the welcomeStateScreen with SingleTickerProviderStateMixin
+class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
+  //declares the animation controller
+  AnimationController controller;
+  Animation animation;
 
-class _WelcomeScreenState extends State<WelcomeScreen> {
+  @override
+  void initState() {
+    //Implement animation controller so that it builds once
+    controller = AnimationController(
+      duration: Duration(seconds: 2),
+        vsync: this,
+        //Increase the upperBound from 1 to 100
+     // upperBound: 100,
+    );
+    controller.forward();
+    controller.addListener(() { });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,47 +60,23 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             SizedBox(
               height: 48.0,
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                elevation: 5.0,
-                color: Colors.lightBlueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                child: MaterialButton(
-                  onPressed: () {
-                    //Go to login screen.
-                    Navigator.pushNamed(context, LoginScreen.id);
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Log In',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                color: Colors.blueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                elevation: 5.0,
-                child: MaterialButton(
-                  onPressed: () {
-                    //Go to registration screen.
-                    Navigator.pushNamed(context, RegistrationScreen.id);
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Register',
-                  ),
-                ),
-              ),
-            ),
+            RoundedButton(title: 'Login',
+                colour:Colors.lightBlueAccent,
+            unpressed: () {
+              //Go to login screen.
+              Navigator.pushNamed(context, LoginScreen.id);
+            },),
+            RoundedButton(title: 'Register',
+              colour:Colors.blueAccent,
+              unpressed: () {
+                //Go to login screen.
+                Navigator.pushNamed(context, RegistrationScreen.id);
+              },),
           ],
         ),
       ),
     );
   }
 }
+
+
