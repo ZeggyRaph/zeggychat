@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "395137073486",
+    "project_id": "zeggy-chat",
+    "storage_bucket": "zeggy-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395137073486:android:b4769f81f6ad1fc3671e1f",
+        "android_client_info": {
+          "package_name": "com.example.zeggy_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395137073486-e9e3t7ulk1sqn2s5rjtkpbdacfm0asmu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCso_ESymbaQYrBSEeywQD6NzG-uV_slDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "395137073486-e9e3t7ulk1sqn2s5rjtkpbdacfm0asmu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "395137073486-ncpmbrut7gpt6dm2phmn4aaictpvfs78.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.zeggyChat"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

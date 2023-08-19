@@ -34,7 +34,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               onChanged: (value) {
                 //Do something with the user input.
               },
-              decoration:kTextFieldDEcoration.copyWith(
+              decoration:kTextFieldDecoration.copyWith(
                   hintText:'Enter your email',
               ),
             ),
@@ -45,7 +45,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               onChanged: (value) {
                 //Do something with the user input.
               },
-              decoration: kTextFieldDEcoration.copyWith(hintText: 'Enter your password',
+              decoration: kTextFieldDecoration.copyWith(hintText: 'Enter your password',
               ),
               ),
             SizedBox(

@@ -4,7 +4,16 @@ import 'package:zeggy_chat/screens/login_screen.dart';
 import 'package:zeggy_chat/screens/registration_screen.dart';
 import 'package:zeggy_chat/screens/chat_screen.dart';
 
-void main() => runApp(FlashChat());
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(FlashChat());
+}
 
 class FlashChat extends StatelessWidget {
   @override
