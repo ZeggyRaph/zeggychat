@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:zeggy_chat/components/rounded_button.dart';
 import 'package:zeggy_chat/constants.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
+
+
+
 class LoginScreen extends StatefulWidget {
 
   //The static keyword helps to create a class wise variable
@@ -11,6 +16,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

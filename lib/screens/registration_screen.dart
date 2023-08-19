@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:zeggy_chat/components/rounded_button.dart';
 import 'package:zeggy_chat/constants.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:zeggy_chat/screens/chat_screen.dart';
+
+
 class RegistrationScreen extends StatefulWidget {
 
   //The static keyword helps to create a class wise variable
@@ -10,6 +15,7 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final _auth = FirebaseAuth.instance;
   String email;
   String password;
   @override
@@ -62,10 +68,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             RoundedButton(
               title: 'Register',
               colour: Colors.blueAccent,
-              unpressed: () {
-        //Implement registration functionality.
-                print(email);
-                print(password);
+              unpressed: () async{
+        //Implementing the firebase functionality to authenticate users email and password
+                try {
+                  //registers new user
+                  final newuser = await _auth.createUserWithEmailAndPassword(
+                      email: email, password: password);
+                  //check if user has enter his details, then take the user to chat screen
+                  if(newuser != null){
+                    Navigator.pushNamed(context, ChatScreen.id);
+                  }
+                }catch(e){
+                  print(e);
+                };
       },)
           ],
         ),
