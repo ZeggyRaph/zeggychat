@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:zeggy_chat/constants.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
 
@@ -14,7 +15,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-
+ String messageText;
+ final _fireStore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   User loggedInUser;
 
@@ -71,7 +73,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   Expanded(
                     child: TextField(
                       onChanged: (value) {
-                        //Do something with the user input.
+                        //Any message entered in the chatScreen becomes message text
+                        messageText = value;
                       },
                       decoration: kMessageTextFieldDecoration,
                     ),
@@ -79,6 +82,12 @@ class _ChatScreenState extends State<ChatScreen> {
                   ElevatedButton(
                     onPressed: () {
                       //Implement send functionality.
+
+                      _fireStore.collection('messages').add({
+                        'text': messageText,
+                        'sender': loggedInUser.email
+                      });
+
                     },
                     child: Text(
                       'Send',
