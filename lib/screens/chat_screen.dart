@@ -1,4 +1,6 @@
 
+//import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:zeggy_chat/constants.dart';
 
@@ -42,6 +44,25 @@ class _ChatScreenState extends State<ChatScreen> {
       print(e);
     }
   }
+
+  //This method will retrieve data from the cloudfire store to the chatscreen
+ // void getMessages() async{
+ //    //This retrieve the data in the messages collection in form of map document
+ //    final messages = await _fireStore.collection('messages').get();
+ //    //looping through with a for loop
+ //    for(var message in messages.docs){
+ //      print(message.data());
+ //    }
+ //  }
+
+ // void messagesStream() async{
+ //   await for(var snapshots in _fireStore.collection('messages').snapshots()){
+ //     for(var message in snapshots.docs){
+ //       print(message.data());
+ //     }
+ //   }
+ // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,9 +72,11 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
+                //messagesStream();
+                //getMessages();
                 //This will sign out the user
-                _auth.signOut();
-                Navigator.pop(context);
+                // _auth.signOut();
+                // Navigator.pop(context);
 
               }),
         ],
@@ -65,38 +88,65 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              decoration: kMessageContainerDecoration,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      onChanged: (value) {
-                        //Any message entered in the chatScreen becomes message text
-                        messageText = value;
-                      },
-                      decoration: kMessageTextFieldDecoration,
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      //Implement send functionality.
+            StreamBuilder<QuerySnapshot>(
+              //Note the property "stream" is the source of data
+              stream: _fireStore.collection('messages').snapshots(),
+              builder: (context, snapshot){
+                //This should happen if the snapshot has no data
+                if(!snapshot.hasData){
+                  return Center(child: CircularProgressIndicator(
+                    backgroundColor: Colors.lightBlueAccent,
+                  ),);
+                }
+                //This is a list of snapshot document and
+                //This happens if the snapshot has data
+                  final messages = snapshot.data.docs;
+                  //Creates a list of text widgets
+                  List<Text> messageWidgets = [];
+                  //Loops through messages
+                  for(var message in messages){
+                    final messageText = message['text'];
+                    final messageSender = message['sender'];
+                    final messageWidget = Text('$messageText from $messageSender');
+                    messageWidgets.add(messageWidget);
+                  }
+                  return Column(children: messageWidgets,);
 
-                      _fireStore.collection('messages').add({
-                        'text': messageText,
-                        'sender': loggedInUser.email
-                      });
-
-                    },
-                    child: Text(
-                      'Send',
-                      style: kSendButtonTextStyle,
-                    ),
-                  ),
-                ],
+              }
               ),
-            ),
+               Container(
+                decoration: kMessageContainerDecoration,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        onChanged: (value) {
+                          //Any message entered in the chatScreen becomes message text
+                          messageText = value;
+                        },
+                        decoration: kMessageTextFieldDecoration,
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        //Implement send functionality.
+
+                        _fireStore.collection('messages').add({
+                          'text': messageText,
+                          'sender': loggedInUser.email
+                        });
+
+                      },
+                      child: Text(
+                        'Send',
+                        style: kSendButtonTextStyle,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
           ],
         ),
       ),
