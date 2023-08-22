@@ -107,10 +107,14 @@ class _ChatScreenState extends State<ChatScreen> {
                   for(var message in messages){
                     final messageText = message['text'];
                     final messageSender = message['sender'];
-                    final messageWidget = Text('$messageText from $messageSender');
+                    final messageWidget = Text('$messageText from $messageSender',
+                    style: TextStyle(fontSize: 50),);
                     messageWidgets.add(messageWidget);
                   }
-                  return Column(children: messageWidgets,);
+                  //Using a listview so as to make scrollable
+                //And wrapping the listview inside and expanded widget so that
+                // It does occupy all the space
+                  return Expanded(child: ListView(children: messageWidgets,));
 
               }
               ),
@@ -136,8 +140,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           'text': messageText,
                           'sender': loggedInUser.email
                         });
-
-                      },
+                        },
                       child: Text(
                         'Send',
                         style: kSendButtonTextStyle,
