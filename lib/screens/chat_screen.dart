@@ -5,6 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 final _fireStore = FirebaseFirestore.instance;
+//This is the details of the loggedIn user and
+//made a global variable
+User loggedInUser;
 
 class ChatScreen extends StatefulWidget {
   //The static keyword helps to create a class wise variable
@@ -16,7 +19,8 @@ class _ChatScreenState extends State<ChatScreen> {
   final messageTextController = TextEditingController();
  String messageText;
  final _auth = FirebaseAuth.instance;
-  User loggedInUser;
+ Timestamp createdAt = Timestamp.now();
+
 
   @override
   void initState() {
@@ -32,7 +36,6 @@ class _ChatScreenState extends State<ChatScreen> {
     //check if the user detail is not empty
     if(user != null) {
       loggedInUser = user;
-      print(loggedInUser.email);
     }
     }catch(e){
       print(e);
@@ -66,11 +69,9 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
-                //messagesStream();
-                //getMessages();
                 //This will sign out the user
-                // _auth.signOut();
-                // Navigator.pop(context);
+                _auth.signOut();
+                 Navigator.pop(context);
 
               }),
         ],
@@ -107,7 +108,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         //This adds a new message into the chatScreen
                         _fireStore.collection('messages').add({
                           'text': messageText,
-                          'sender': loggedInUser.email
+                          'sender': loggedInUser.email,
+                          'createdAt': FieldValue.serverTimestamp(),
                         });
                         },
                       child: Text(
@@ -118,7 +120,6 @@ class _ChatScreenState extends State<ChatScreen> {
                   ],
                 ),
               ),
-
           ],
         ),
       ),
@@ -132,7 +133,7 @@ class MessageStream extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       //Note the property "stream" is the source of data
-        stream: _fireStore.collection('messages').snapshots(),
+        stream: _fireStore.collection('messages').orderBy('createdAt', descending: true).snapshots(),
         builder: (context, snapshot){
           //This should happen if the snapshot has no data
           if(!snapshot.hasData){
@@ -141,18 +142,32 @@ class MessageStream extends StatelessWidget {
             ),);
           }
           //This is a list of snapshot document and
-          //This happens if the snapshot has data
+          //This happens if the snapshot has data,
           final messages = snapshot.data.docs;
           //Creates a list of messageBubble widgets
           List<MessageBubble> messageWidgets = [];
           //Loops through messages
           for(var message in messages){
+            //This is the text chat of the sender
             final messageText = message['text'];
+            print(messageText);
+
+            //This is the email of the sender
             final messageSender = message['sender'];
+            print(messageSender);
+            final messageTime = message['createdAt'];
+            print(messageTime);
+
+            //Declares a new variable which becomes equal to the loggedIn user
+            final currentUser = loggedInUser.email;
+            //print(currentUser);
 
             //Refactored the Text widget for special styling
             final messageBubble = MessageBubble(
-              text: messageText,sender: messageSender,);
+              text: messageText,
+              sender: messageSender,
+              isMe: currentUser == messageSender,
+            );
             messageWidgets.add(messageBubble);
           }
           //Using a listview so as to make scrollable
@@ -161,9 +176,12 @@ class MessageStream extends StatelessWidget {
           return Expanded(
               child:
               ListView(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20.0),
-                children: messageWidgets,));
-
+                reverse: true,
+                padding: EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 20.0),
+                children: messageWidgets,),
+          );
         }
     );
   }
@@ -172,9 +190,11 @@ class MessageStream extends StatelessWidget {
 
 //Refactored the message texts
 class MessageBubble extends StatelessWidget {
-  MessageBubble({this.text, this.sender});
+  MessageBubble({this.text, this.sender, this.isMe});
   final text;
   final sender;
+  //A boolean to compare if logged in user email is the same as the email of the chat sender
+  bool isMe;
 
 
   @override
@@ -185,21 +205,33 @@ class MessageBubble extends StatelessWidget {
       padding:  EdgeInsets.all(10.0),
       child: Column(
         //sending the chat text to the far right
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: isMe ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
         children: [
           Text(sender,style: TextStyle(
           fontSize: 12.0,
           color: Colors.black54),),
           Material(
         elevation: 5.0,
-        borderRadius: BorderRadius.circular(30.0),
-        color: Colors.lightBlueAccent,
+        //This give a special border styling for the sender text
+        borderRadius: isMe ? BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30)) : BorderRadius.only(
+        topRight: Radius.circular(30.0),
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          ),
+
+        //Selects colors based on the condition of isMe
+        color: isMe ? Colors.lightBlueAccent : Colors.white,
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
           child: Text(text,
             style: TextStyle(
               fontSize: 15.0,
-            color: Colors.white),),
+                //Selects text's colors based on the condition of isMe
+            color: isMe ? Colors.white : Colors.black54),),
         ),
       ),],),
     );
